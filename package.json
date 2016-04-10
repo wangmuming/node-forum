@@ -20,6 +20,7 @@
     "url": "https://github.com/wangmuming/node-forum/issues"
   },
   "homepage": "https://github.com/wangmuming/node-forum#readme",
+
     "dependencies": {
     "body-parser": "^1.15.0",
     "bootstrap": "^3.3.6",
@@ -48,6 +49,7 @@
     "url-loader": "^0.5.7",
     "validator": "^5.1.0"
   },
+
   "devDependencies": {
     "babel-cli": "^6.6.5",
     "babel-core": "^6.7.4",
@@ -61,4 +63,5 @@
     "webpack": "^1.12.14",
     "webpack-dev-server": "^1.14.1"
   }
+
 }
