@@ -11,44 +11,53 @@ import createDebug from 'debug';
 
 const $ = global.$ = new ProjectCore();
 
-//create debug function
-$.createDebug = function(name) {
-   return createDebug('my:'+name);
-};
 
+// 创建Debug函数
+$.createDebug = function (name) {
+  return createDebug('my:' + name);
+};
 const debug = $.createDebug('server');
 
-//加载配置项
+
+// 加载配置文件
 $.init.add((done) => {
-  $.config.load(path.resolve(__dirname,'config.js'));
+  $.config.load(path.resolve(__dirname, 'config.js'));
   const env = process.env.NODE_ENV || null;
-  if(env) {
-    $.config.load(path.resolve(__dirname,'../config',env+'.js'));
+  if (env) {
+    debug('load env: %s', env);
+    $.config.load(path.resolve(__dirname, '../config', env + '.js'));
   }
   $.env = env;
   done();
 });
 
-//init mongodb
-$.init.load(path.resolve(__dirname,'init','mongodb.js'));
 
-//load models
-$.init.load(path.resolve(__dirname,'models'));
-
-//init Express
-$.init.load(path.resolve(__dirname,'init','express.js'));
-
-//load routes
-$.init.load(path.resolve(__dirname,'routes'));
+// 初始化MongoDB
+$.init.load(path.resolve(__dirname, 'init', 'mongodb.js'));
+// 加载Models
+$.init.load(path.resolve(__dirname, 'models'));
 
 
-//init
+// 加载methods
+$.init.load(path.resolve(__dirname, 'methods'));
+
+
+// 初始化Express
+$.init.load(path.resolve(__dirname, 'init', 'express.js'));
+// 初始化中间件
+$.init.load(path.resolve(__dirname, 'middlewares'));
+// 加载路由
+$.init.load(path.resolve(__dirname, 'routes'));
+
+
+// 初始化
 $.init((err) => {
-   if (err) {
+  if (err) {
     console.error(err);
     process.exit(-1);
-   } else {
-     console.log('inited');
-   }
+  } else {
+    console.log('inited [env=%s]', $.env);
+  }
 
+  require('./test');
 });
