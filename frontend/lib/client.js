@@ -58,3 +58,8 @@ export function logout() {
 export function addTopic(title, tags, content) {
   return request('post', 'topic/add', {title, tags, content}).then(ret => ret.topic);;
 }
+
+// ÐÞ¸Ä»°Ìâ
+export function editTopic(id, title, content, tags) {
+  return request('post', `topic/item/${id}`, {title, content, tags}).then(ret => ret.topic);
+}
