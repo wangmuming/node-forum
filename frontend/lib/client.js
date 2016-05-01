@@ -35,31 +35,37 @@ export function request(method, path, data = {}) {
   });
 }
 
+// 获取话题列表
 export function getTopicList(options) {
   return request('get', 'topic/list', {});
 }
 
+// 获取评论详情
 export function getTopicDetail(id) {
   return request('get', `topic/item/${id}`).then(ret => ret.topic);
 }
 
+// 用户登录
 export function login(name, password) {
   return request('post', 'login', {name, password});
 }
 
+// 检查登录状态
 export function loginUser() {
   return request('get', 'login_user').then(ret => ret.user);
 }
 
+// 用户注销
 export function logout() {
   return request('post', 'logout');
 }
 
-export function addTopic(title, tags, content) {
-  return request('post', 'topic/add', {title, tags, content}).then(ret => ret.topic);;
+// 发表话题
+export function addTopic(title, content, tags) {
+  return request('post', 'topic/add', {title, content, tags}).then(ret => ret.topic);
 }
 
 // 修改话题
-export function editTopic(id, title, content, tags) {
+export function updateTopic(id, title, content, tags) {
   return request('post', `topic/item/${id}`, {title, content, tags}).then(ret => ret.topic);
 }
