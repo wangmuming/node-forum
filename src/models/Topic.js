@@ -9,23 +9,22 @@
 import mongoose from 'mongoose';
 
 module.exports = function (done) {
-
   const Schema = mongoose.Schema;
   const ObjectId = Schema.ObjectId;
 
   const Topic = new Schema({
-    authorId: {type: ObjectId, index: true},
-    title: {type: String, trim: true},
+    author: {type: ObjectId, index: true, ref: 'User'}, //index索引   ref 表示关联到User表
+    title: {type:String, trim: true}, //trim自动去掉首尾的空格
     content: {type: String},
-    tags: [{type: String, index: true}],
+    tags: [{type: String, index: true}],  //字符串数组
     createdAt: {type: Date, index: true},
     updatedAt: {type: Date, index: true},
-    lastCommentedAt: {type: Date, index: true},
+    lastCommentAt: {type: Date, index: true},
     comments: [{
-      authorId: ObjectId,
+      author: {type: ObjectId, ref: 'User'},
       content: String,
-      createdAt: Date,
-    }],
+      createdAt: Date
+    }]
   });
 
   $.mongodb.model('Topic', Topic);
@@ -33,4 +32,4 @@ module.exports = function (done) {
 
   done();
 
-};
+}

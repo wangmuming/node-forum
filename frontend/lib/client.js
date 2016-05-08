@@ -35,37 +35,62 @@ export function request(method, path, data = {}) {
   });
 }
 
-// »ñÈ¡»°ÌâÁĞ±í
+// è·å–è¯é¢˜åˆ—è¡¨
 export function getTopicList(options) {
-  return request('get', 'topic/list', {});
+  return request('get', 'topic/list', options);
 }
 
-// »ñÈ¡ÆÀÂÛÏêÇé
+// è·å–è¯„è®ºè¯¦æƒ…
 export function getTopicDetail(id) {
   return request('get', `topic/item/${id}`).then(ret => ret.topic);
 }
 
-// ÓÃ»§µÇÂ¼
+// ç”¨æˆ·ç™»å½•
 export function login(name, password) {
   return request('post', 'login', {name, password});
 }
 
-// ¼ì²éµÇÂ¼×´Ì¬
+// æ£€æŸ¥ç™»å½•çŠ¶æ€
 export function loginUser() {
   return request('get', 'login_user').then(ret => ret.user);
 }
 
-// ÓÃ»§×¢Ïú
+// ç”¨æˆ·æ³¨é”€
 export function logout() {
   return request('post', 'logout');
 }
 
-// ·¢±í»°Ìâ
+// å‘è¡¨è¯é¢˜
 export function addTopic(title, content, tags) {
   return request('post', 'topic/add', {title, content, tags}).then(ret => ret.topic);
 }
 
-// ĞŞ¸Ä»°Ìâ
+// ä¿®æ”¹è¯é¢˜
 export function updateTopic(id, title, content, tags) {
   return request('post', `topic/item/${id}`, {title, content, tags}).then(ret => ret.topic);
+}
+
+// å‘è¡¨è¯„è®º
+export function addComment(id, content) {
+  return request('post', `topic/item/${id}/comment/add`, {content}).then(ret => ret.comment);
+}
+
+// åˆ é™¤è¯„è®º
+export function deleteComment(id, cid) {
+  return request('post', `topic/item/${id}/comment/delete`, {cid});
+}
+
+// ç”¨æˆ·æ³¨å†Œ
+export function signup(name, email, password, nickname) {
+  return request('post', 'signup', {name, email, password, nickname});
+}
+
+// ä¿®æ”¹ç”¨æˆ·ä¿¡æ¯
+export function updateProfile(nickname, email, about) {
+  return request('post', 'user/profile', {nickname, email, about});
+}
+
+// åˆ é™¤ä¸»é¢˜
+export function deleteTopic(id) {
+  return request('delete', `topic/item/${id}`);
 }
