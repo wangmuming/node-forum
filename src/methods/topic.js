@@ -7,6 +7,7 @@
 * @author William Wang <wangmuming_0218@126.com>
 */
 
+
 import validator from 'validator';
 
 module.exports = function (done) {
@@ -65,7 +66,8 @@ module.exports = function (done) {
       tags: 1,
       createdAt: 1,
       updatedAt: 1,
-      lastCommentAt: 1
+      lastCommentAt: 1,
+      pageView: 1
     // }).populate('author', 'nickname');   // 第一个参数：通过author拿到User表中对应的数据   第二个参数表示只要拿到这个信息
     }).populate({
       path: 'author',
@@ -121,6 +123,16 @@ module.exports = function (done) {
 
   });
 
+  // 访问统计增加
+  $.method('topic.incrPageView').check({
+    _id: {required: true, validate: (v) => validator.isMongoId(String(v))},
+  });
+  $.method('topic.incrPageView').register(async function(params){
+
+    return $.model.Topic.update({_id: params._id}, {$inc: {pageView: 1}});
+
+  });
+
   // 增加topic的评论
   $.method('topic.comment.add').check({
     _id: {required: true, validate: (v) => validator.isMongoId(String(v))},
@@ -134,7 +146,20 @@ module.exports = function (done) {
       content: params.content,
       createdAt: new Date()
     };
-    // console.log(comment);
+
+    const topic = await $.method('topic.get').call({_id: params._id});
+    if(!topic) throw new Error('topic does not exists');
+
+    await $.method('notification.add').call({
+      from: params.author,
+      to: topic.author._id,
+      type: 'topic_comment',
+      data: {
+        _id: params._id,
+        title: topic.title
+      }
+    });
+
     return $.model.Topic.update({_id: params._id}, {
       $push: {
         comments: comment

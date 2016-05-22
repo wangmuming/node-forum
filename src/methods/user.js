@@ -20,8 +20,6 @@ module.exports = function (done) {
 
   //功能
   $.method('user.add').register(async function(params){
-    // console.log(params);
-    // callback(params);
     params.name = params.name.toLowerCase();
     //const的作用域在花括号内
     {
@@ -92,6 +90,18 @@ module.exports = function (done) {
     if(params.about && user.about != params.about) update.about = params.about;
 
     return $.model.User.update({_id: user._id}, {$set: update});
+
+  });
+
+  // 增加用户积分
+  $.method('user.incrScore').check({
+    _id: {validate: (v) => validator.isMongoId(v), required: true},
+    score: {validate: (v) => !isNaN(v), required: true}
+  });
+
+  $.method('user.incrScore').register(async function(params){
+
+    return $.model.User.update({_id: params._id}, {$inc: {score: params.score}});
 
   });
 

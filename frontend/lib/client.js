@@ -94,3 +94,18 @@ export function updateProfile(nickname, email, about) {
 export function deleteTopic(id) {
   return request('delete', `topic/item/${id}`);
 }
+
+// 获取通知消息数
+export function notificationCount(isRead) {
+  return request('get', `notification/count`, {isRead}).then(ret => ret.count);
+}
+
+// 获取通知消息列表
+export function notificationList() {
+  return request('get', `notification/list`);
+}
+
+// 获取通知消息列表数据设为已读
+export function notificationSetRead(id) {
+  return request('post', `notification/${id}/read`);
+}

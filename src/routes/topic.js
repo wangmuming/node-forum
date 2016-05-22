@@ -5,6 +5,8 @@
 *
 * @author William Wang <wangmuming_0218@126.com>
 */
+
+
 module.exports = function (done) {
 
 
@@ -14,12 +16,24 @@ module.exports = function (done) {
 
     req.body.author = req.session.user._id;
 
-    console.log(1, req.body);
+    // 发布频率限制  {}为了解决作用域的问题（ES6的新特性）
+    {
+      const key = `addtopic:${req.body.author}:${$.utils.date('YmdH')}`;
+      const limit = 2;
+      const ok = await $.limiter.incr(key, limit);
+      if(!ok) throw new Error('out of limit');
+    }
+
     if('tags' in req.body){
       req.body.tags = req.body.tags.split(',').map(v => v.trim()).filter(v => v);
     }
+
     const topic = await $.method('topic.add').call(req.body);
-     res.apiSuccess({topic});
+
+    // 发布新主题就增加积分
+    $.method('user.incrScore').call({_id: req.body.author, score: 5});
+
+    res.apiSuccess({topic});
 
   });
 
@@ -67,6 +81,8 @@ module.exports = function (done) {
       };
     });
 
+    await $.method('topic.incrPageView').call({_id: req.params.topic_id});
+
     res.apiSuccess(result);
 
   });
@@ -100,9 +116,20 @@ module.exports = function (done) {
   $.router.post('/api/topic/item/:topic_id/comment/add', $.checkLogin, async function (req, res, next) {
 
     req.body._id = req.params.topic_id;
-    // console.log(req.session.user._id);
     req.body.author = req.session.user._id;
+
+    // 发布频率限制  {}为了解决作用域的问题（ES6的新特性）
+    {
+      const key = `addcomment:${req.body.author}:${$.utils.date('YmdH')}`;
+      const limit = 20;
+      const ok = await $.limiter.incr(key, limit);
+      if(!ok) throw new Error('out of limit');
+    }
+
     const comment = await $.method('topic.comment.add').call(req.body);
+
+    // 发布新主题就增加积分
+    $.method('user.incrScore').call({_id: req.body.author, score: 1});
 
     res.apiSuccess({comment});
 
