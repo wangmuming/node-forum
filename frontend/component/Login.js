@@ -1,12 +1,8 @@
 import React from 'react';
 import jQuery from 'jquery';
+import {Link} from 'react-router';
 import {login} from '../lib/client';
 import {redirectURL} from '../lib/utils';
-
-// const footerStyle = {
-//   marginTop: 50,
-//   padding: 20
-// };
 
 export default class Login extends React.Component{
 
@@ -39,6 +35,8 @@ export default class Login extends React.Component{
   }
 
   render(){
+    // console.log(this.props.location.query);
+    const isBind = this.props.location.query.bind === '1' ? true : false;
     return(
       <div style={{width: 400, margin: 'auto'}}>
         <div className="panel panel-primary">
@@ -53,7 +51,12 @@ export default class Login extends React.Component{
                 <label htmlFor="password">密码</label>
                 <input type="password" className="form-control" id="password" onChange={this.handleChange.bind(this, 'password')} placeholder="" />
               </div>
-              <button type="button" className="btn btn-primary" onClick={this.handleLogin.bind(this)}>登录</button>
+              <button type="button" className="btn btn-primary" onClick={this.handleLogin.bind(this)}>{isBind ? '绑定' : '登录'}</button>
+              &nbsp;
+              {isBind ? null : <a href="/auth/github" className="btn btn-info">使用GutHub账号登录</a>}
+              <span className="pull-right">
+                <Link to="/reset_password">重置密码</Link>
+              </span>
             </form>
           </div>
         </div>

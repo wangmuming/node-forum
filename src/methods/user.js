@@ -8,7 +8,6 @@
 */
 
 import validator from 'validator';
-
 module.exports = function (done) {
   //验证
   $.method('user.add').check({
@@ -45,7 +44,7 @@ module.exports = function (done) {
 
   //验证
   $.method('user.get').check({
-    _id: {validate: (v) => validator.isMongoId(v)},
+    _id: {validate: (v) => validator.isMongoId(String(v))},
     name: {validate: (v) => validator.isLength(v, {min: 4,max: 20}) && /^[a-zA-Z]/.test(v)},
     email: {validate: (v) => validator.isEmail(v)}
   });
@@ -59,6 +58,8 @@ module.exports = function (done) {
       query.name = params.name;
     }else if (params.email) {
       query.email = params.email;
+    } else if (params.githubUsername) {
+      query.githubUsername = params.githubUsername;
     }else{
       throw new Error('missing parameter _id | name | email');
     }
@@ -70,7 +71,7 @@ module.exports = function (done) {
 
   //验证
   $.method('user.update').check({
-    _id: {validate: (v) => validator.isMongoId(v)},
+    _id: {validate: (v) => validator.isMongoId(String(v))},
     name: {validate: (v) => validator.isLength(v, {min: 4,max: 20}) && /^[a-zA-Z]/.test(v)},
     email: {validate: (v) => validator.isEmail(v)}
   });
@@ -85,7 +86,8 @@ module.exports = function (done) {
     const update = {};
     if(params.name && user.name != params.name) update.name = params.name;
     if(params.email && user.email != params.email) update.email = params.email;
-    if(params.password && user.password != params.password) update.password = params.password;
+    if(params.githubUsername && user.githubUsername != params.githubUsername) update.githubUsername = params.githubUsername;
+    if(params.password && user.password != params.password) update.password = $.utils.encryptPassword(params.password);
     if(params.nickname && user.nickname != params.nickname) update.nickname = params.nickname;
     if(params.about && user.about != params.about) update.about = params.about;
 
@@ -95,7 +97,7 @@ module.exports = function (done) {
 
   // 增加用户积分
   $.method('user.incrScore').check({
-    _id: {validate: (v) => validator.isMongoId(v), required: true},
+    _id: {validate: (v) => validator.isMongoId(String(v)), required: true},
     score: {validate: (v) => !isNaN(v), required: true}
   });
 

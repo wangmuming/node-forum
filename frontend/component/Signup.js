@@ -3,11 +3,6 @@ import jQuery from 'jquery';
 import {signup} from '../lib/client';
 import {redirectURL} from '../lib/utils';
 
-// const footerStyle = {
-//   marginTop: 50,
-//   padding: 20
-// };
-
 export default class Signup extends React.Component{
 
   constructor(pros){

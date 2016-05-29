@@ -27,4 +27,11 @@ module.exports = function (set, get, has) {
     prefix: 'L:'
   });
 
+   // captcha redis connection
+  set('captcha.redis', {
+    host: '127.0.0.1',
+    port: 6479,
+    prefix: 'C:'
+  });
+
 };

@@ -12,6 +12,7 @@ export default class TopicList extends React.Component {
 
   componentDidMount() {
     this.updateList({
+      // 路由上的参数
       tags: this.props.location.query.tags,
       pageNo: this.props.location.query.pageNo
     });

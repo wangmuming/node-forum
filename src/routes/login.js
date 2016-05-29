@@ -37,6 +37,14 @@ module.exports = function (done) {
     // 随机生成 token
     req.session.logout_token = $.utils.randomString(20);
 
+    if(req.session.github_user){
+      await $.method('user.update').call({
+        _id: user._id,
+        githubUsername: req.session.github_user.username
+      });
+      delete req.session.github_user;
+    }
+
     // 登陆成功后 key 重置
     await $.limiter.reset(key);
 
@@ -48,9 +56,6 @@ module.exports = function (done) {
   $.router.get('/api/logout',async function (req, res, next) {
 
     if(req.session.logout_token && req.query.token !== req.session.logout_token){
-      // console.log(req.query);
-      // console.log(req.query.token);
-      // console.log(req.session.logout_token);
       return next(new Error('invalid token'));
     }
 
@@ -84,6 +89,17 @@ module.exports = function (done) {
     }
 
     const user = await $.method('user.add').call(req.body);
+
+    $.method('mail.sendTemplate').call({
+      to: user.email,
+      subject: '欢迎',
+      template: 'welcome',
+      data: user
+    }, err => {
+      if (err) {
+        console.error(err);
+      }
+    });
 
     res.apiSuccess({user: user});
 

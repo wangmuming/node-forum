@@ -109,3 +109,13 @@ export function notificationList() {
 export function notificationSetRead(id) {
   return request('post', `notification/${id}/read`);
 }
+
+// 获取重置密码的验证码
+export function requestResetPassword(email) {
+  return request('post', '/user/request_reset_password', {email});
+}
+
+// 重置密码
+export function resetPassword(code, email, password) {
+  return request('post', '/user/reset_password', {code, email, password});
+}
