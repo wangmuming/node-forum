@@ -6,6 +6,21 @@
 * @author William Wang <wangmuming_0218@126.com>
 */
 
+
+
+import './base';
+
+// 初始化
+$.init((err) => {
+  if(err) {
+    console.error(err);
+    process.exit(-1);
+  }else{
+    console.log('inited [env=%s]', $.env);
+  }
+});
+
+/**
 import path from 'path';
 import projectCore from 'project-core';
 import createDubug from 'debug';
@@ -91,3 +106,4 @@ $.init((err) => {
   // item.save(console.log);
 
 });
+*/
